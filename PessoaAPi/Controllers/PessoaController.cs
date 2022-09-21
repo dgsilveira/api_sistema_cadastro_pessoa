@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using PessoaAPi.Data;
 using PessoaAPi.Data.Dtos;
 using System;
+using AutoMapper;
 
 namespace PessoaAPi.Controllers
 {
@@ -14,21 +15,18 @@ namespace PessoaAPi.Controllers
     public class PessoaController : ControllerBase
     {
         private PessoaContext _context;
+        private IMapper _mapper;
 
-        public PessoaController(PessoaContext context)
+        public PessoaController(PessoaContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpPost]
         public IActionResult AdicionaPessoa([FromBody] CreatePessoaDto createPessoaDto)
         {
-            var pessoa = new Pessoa
-            {
-                Nome = createPessoaDto.Nome,
-                Email = createPessoaDto.Email,
-                Idade = createPessoaDto.Idade
-            };
+            var pessoa = _mapper.Map<Pessoa>(createPessoaDto);
             _context.Pessoas.Add(pessoa);
             _context.SaveChanges();
             return CreatedAtAction(nameof(RecuperaPessoaPorId), new { Id = pessoa.Id }, pessoa);
@@ -43,17 +41,10 @@ namespace PessoaAPi.Controllers
         [HttpGet("{id}")]
         public IActionResult RecuperaPessoaPorId(int id)
         {
-            Pessoa pessoa = _context.Pessoas.FirstOrDefault(pessoa => pessoa.Id == id);
+            var pessoa = _context.Pessoas.FirstOrDefault(pessoa => pessoa.Id == id);
             if (pessoa != null)
             {
-                ReadPesssoaDto readPessoaDto = new ReadPesssoaDto
-                {
-                    Id = pessoa.Id,
-                    Nome = pessoa.Nome,
-                    Email = pessoa.Email,
-                    Idade = pessoa.Idade,
-                    HoraDaConsulta = DateTime.Now
-                };
+                var readPessoaDto = _mapper.Map<ReadPesssoaDto>(pessoa);
                 return Ok(readPessoaDto);
             }
             return NotFound();
@@ -62,14 +53,12 @@ namespace PessoaAPi.Controllers
         [HttpPut("{id}")]
         public IActionResult AtualizaPessoa(int id, [FromBody] UpdatePessoaDto updatePessoaDto)
         {
-            Pessoa pessoa = _context.Pessoas.FirstOrDefault(pessoa => pessoa.Id == id);
+            var pessoa = _context.Pessoas.FirstOrDefault(pessoa => pessoa.Id == id);
             if(pessoa == null)
             {
                 return NotFound();
             }
-            pessoa.Nome = updatePessoaDto.Nome;
-            pessoa.Email = updatePessoaDto.Email;
-            pessoa.Idade = updatePessoaDto.Idade;
+            _mapper.Map(updatePessoaDto, pessoa);
             _context.SaveChanges();
             return NoContent();
         }
