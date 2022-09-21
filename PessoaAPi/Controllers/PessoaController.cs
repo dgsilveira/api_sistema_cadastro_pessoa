@@ -42,6 +42,21 @@ namespace PessoaAPi.Controllers
             }
             return NotFound();
         }
+        
+        [HttpPut("{id}")]
+        public IActionResult AtualizaPessoa(int id, [FromBody] Pessoa pessoaNova)
+        {
+            Pessoa pessoa = _context.Pessoas.FirstOrDefault(pessoa => pessoa.Id == id);
+            if(pessoa == null)
+            {
+                return NotFound();
+            }
+            pessoa.Nome = pessoaNova.Nome;
+            pessoa.Email = pessoaNova.Email;
+            pessoa.Idade = pessoaNova.Idade;
+            _context.SaveChanges();
+            return NoContent();
+        }
 
     }
 }
