@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using PessoaAPi.Models;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using PessoaAPi.Data;
 
 namespace PessoaAPi.Controllers
 {
@@ -9,32 +11,37 @@ namespace PessoaAPi.Controllers
     [Route("[controller]")]
     public class PessoaController : ControllerBase
     {
-        private static List<Pessoa> pessoas = new List<Pessoa>();
-        private static int id = 1;
+        private PessoaContext _context;
+
+        public PessoaController(PessoaContext context)
+        {
+            _context = context;
+        }
 
         [HttpPost]
         public IActionResult AdicionaPessoa(Pessoa pessoa)
         {
-            pessoa.Id = id++;
-            pessoas.Add(pessoa);
+            _context.Pessoas.Add(pessoa);
+            _context.SaveChanges();
             return CreatedAtAction(nameof(RecuperaPessoaPorId), new { Id = pessoa.Id }, pessoa);
         }
 
         [HttpGet]
-        public IActionResult RecuperarPessoa()
+        public IEnumerable<Pessoa> RecuperarPessoa()
         {
-            return Ok(pessoas);
+            return _context.Pessoas;
         }
 
         [HttpGet("{id}")]
         public IActionResult RecuperaPessoaPorId(int id)
         {
-            Pessoa pessoa = pessoas.FirstOrDefault(pessoa => pessoa.Id == id);
-            if(pessoa != null)
+            Pessoa pessoa = _context.Pessoas.FirstOrDefault(pessoa => pessoa.Id == id);
+            if (pessoa != null)
             {
                 return Ok(pessoa);
             }
             return NotFound();
         }
+
     }
 }
