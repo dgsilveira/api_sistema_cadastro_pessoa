@@ -51,16 +51,16 @@ namespace PessoaAPi.Controllers
         }
         
         [HttpPut("{id}")]
-        public IActionResult AtualizaPessoa(int id, [FromBody] Pessoa pessoaNova)
+        public IActionResult AtualizaPessoa(int id, [FromBody] UpdatePessoaDto updatePessoaDto)
         {
             Pessoa pessoa = _context.Pessoas.FirstOrDefault(pessoa => pessoa.Id == id);
             if(pessoa == null)
             {
                 return NotFound();
             }
-            pessoa.Nome = pessoaNova.Nome;
-            pessoa.Email = pessoaNova.Email;
-            pessoa.Idade = pessoaNova.Idade;
+            pessoa.Nome = updatePessoaDto.Nome;
+            pessoa.Email = updatePessoaDto.Email;
+            pessoa.Idade = updatePessoaDto.Idade;
             _context.SaveChanges();
             return NoContent();
         }
