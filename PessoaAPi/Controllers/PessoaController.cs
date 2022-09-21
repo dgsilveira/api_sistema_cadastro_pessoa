@@ -4,6 +4,7 @@ using PessoaAPi.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using PessoaAPi.Data;
+using PessoaAPi.Data.Dtos;
 
 namespace PessoaAPi.Controllers
 {
@@ -19,8 +20,14 @@ namespace PessoaAPi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AdicionaPessoa(Pessoa pessoa)
+        public IActionResult AdicionaPessoa(CreatePessoaDto createPessoaDto)
         {
+            var pessoa = new Pessoa
+            {
+                Nome = createPessoaDto.Nome,
+                Email = createPessoaDto.Email,
+                Idade = createPessoaDto.Idade
+            };
             _context.Pessoas.Add(pessoa);
             _context.SaveChanges();
             return CreatedAtAction(nameof(RecuperaPessoaPorId), new { Id = pessoa.Id }, pessoa);
