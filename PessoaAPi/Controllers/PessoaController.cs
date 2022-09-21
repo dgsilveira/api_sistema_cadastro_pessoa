@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using PessoaAPi.Data;
 using PessoaAPi.Data.Dtos;
+using System;
 
 namespace PessoaAPi.Controllers
 {
@@ -45,7 +46,15 @@ namespace PessoaAPi.Controllers
             Pessoa pessoa = _context.Pessoas.FirstOrDefault(pessoa => pessoa.Id == id);
             if (pessoa != null)
             {
-                return Ok(pessoa);
+                ReadPesssoaDto readPessoaDto = new ReadPesssoaDto
+                {
+                    Id = pessoa.Id,
+                    Nome = pessoa.Nome,
+                    Email = pessoa.Email,
+                    Idade = pessoa.Idade,
+                    HoraDaConsulta = DateTime.Now
+                };
+                return Ok(readPessoaDto);
             }
             return NotFound();
         }
