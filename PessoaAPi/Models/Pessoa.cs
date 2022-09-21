@@ -4,6 +4,7 @@ namespace PessoaAPi.Models
 {
     public class Pessoa
     {
+        [Key]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "O campo nome é obrigatório",AllowEmptyStrings =false)]
