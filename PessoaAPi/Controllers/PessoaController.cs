@@ -58,5 +58,17 @@ namespace PessoaAPi.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeletaPessoa(int id)
+        {
+            var pessoa = _context.Pessoas.FirstOrDefault(pessoa =>pessoa.Id == id);
+            if(pessoa == null)
+            {
+                return NotFound();
+            }
+            _context.Remove(pessoa);
+            _context.SaveChanges();
+            return NoContent();
+        }
     }
 }
