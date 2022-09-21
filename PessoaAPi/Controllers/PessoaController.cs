@@ -27,7 +27,7 @@ namespace PessoaAPi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Pessoa> RecuperarPessoa()
+        public IEnumerable<Pessoa> RecuperaPessoas()
         {
             return _context.Pessoas;
         }
