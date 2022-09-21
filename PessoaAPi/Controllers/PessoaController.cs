@@ -21,7 +21,7 @@ namespace PessoaAPi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AdicionaPessoa(CreatePessoaDto createPessoaDto)
+        public IActionResult AdicionaPessoa([FromBody] CreatePessoaDto createPessoaDto)
         {
             var pessoa = new Pessoa
             {
